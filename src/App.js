@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const searchGiphy = (searchTerm) => {
+    const giphyApiUrl = `https://api.giphy.com/v1/gifs/random?api_key=U2YAk0lxhD8UEoSCpXqcskUTDZjxVGvD&tag=${searchTerm}`;
+
+    fetch(giphyApiUrl)
+      .then((response) => response.json())
+      .then((result) => {
+        setImageUrl(result.data.fixed_height_downsampled_url);
+      });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>----Header----------</p>
+      <form>
+        <label>
+          Search Giphy:
+          <input
+            value={searchTerm}
+            type="text"
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                searchGiphy(searchTerm);
+              }
+            }}
+          ></input>
+        </label>
+      </form>
+      {imageUrl.length > 0 && (
+        <>
+          <img src={imageUrl} alt={searchTerm} />
+          <p>{imageUrl}</p>
+        </>
+      )}
+      <p>----Footer----------</p>
     </div>
   );
 }
